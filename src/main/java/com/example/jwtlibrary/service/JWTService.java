@@ -4,7 +4,7 @@ import com.example.jwtlibrary.config.JWTProperties;
 import com.example.jwtlibrary.exception.InvalidTokenException;
 import com.example.jwtlibrary.exception.MissingClaimsException;
 import com.example.jwtlibrary.exception.TokenExpiredException;
-import com.example.jwtlibrary.util.ClaimExtractor;
+import com.example.jwtlibrary.util.ClaimsExtractor;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -52,11 +52,11 @@ public class JWTService {
     }
 
     public String getUserIdFromClaims(Claims claims){
-        return ClaimExtractor.getSubject(claims);
+        return ClaimsExtractor.getSubject(claims);
     }
 
     public String getUserRoleFromClaims(Claims claims){
-        return ClaimExtractor.getStringClaim(claims, "role");
+        return ClaimsExtractor.getStringClaims(claims, "role");
     }
 
 }
