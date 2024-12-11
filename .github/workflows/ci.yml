@@ -27,8 +27,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build and Test with Coverage # 빌드 + 테스트 + 커버리지 리포트를 생성.
-        run: ./gradlew build jacocoTestReport --no-daemon
+#      - name: Build and Test with Coverage # 빌드 + 테스트 + 커버리지 리포트를 생성.
+#        run: ./gradlew build jacocoTestReport --no-daemon
+
+      - name: Run Coverage
+        run: |
+          chmod +x gradlew
+          ./gradlew testCoverage
 
       - name: Upload coverage report (HTML)
         uses: actions/upload-artifact@v3 # HTML 리포트를 GitHub Actions 결과 페이지에서 다운로드 가능하도록 업로드.
