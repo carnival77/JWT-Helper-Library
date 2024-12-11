@@ -43,11 +43,6 @@ jobs:
       - name: Build with Gradle and Test with Coverage # 빌드 + 테스트 + 커버리지 리포트를 생성.
         run: ./gradlew clean build jacocoTestReport --no-daemon
 
-#      - name: Run Coverage
-#        run: |
-#          chmod +x gradlew
-#          ./gradlew testCoverage
-
       # actions/upload-artifact 액션을 통해 생성된 커버리지 HTML 리포트를 아티팩트로 업로드한다.
       # 빌드가 완료되면 GitHub Actions 결과 페이지에서 이 HTML 아티팩트를 다운로드 받아 로컬 브라우저에서 열어볼 수 있다.
       - name: Upload coverage report (HTML)
