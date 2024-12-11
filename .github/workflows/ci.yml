@@ -27,23 +27,30 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-#      - name: Build and Test with Coverage # 빌드 + 테스트 + 커버리지 리포트를 생성.
-#        run: ./gradlew build jacocoTestReport --no-daemon
+      # ./gradlew build를 통해 프로젝트를 빌드하고 테스트를 실행한다.
+      # jacocoTestReport 태스크를 통해 JaCoCo 커버리지 리포트를 생성한다.
+      # 이 단계에서 기본적인 빌드와 테스트, 커버리지 리포트(HTML, XML)가 모두 준비된다.
+      - name: Build and Test with Coverage # 빌드 + 테스트 + 커버리지 리포트를 생성.
+        run: ./gradlew build jacocoTestReport --no-daemon
 
-      - name: Run Coverage
-        run: |
-          chmod +x gradlew
-          ./gradlew testCoverage
+#      - name: Run Coverage
+#        run: |
+#          chmod +x gradlew
+#          ./gradlew testCoverage
 
+      # actions/upload-artifact 액션을 통해 생성된 커버리지 HTML 리포트를 아티팩트로 업로드한다.
+      # 빌드가 완료되면 GitHub Actions 결과 페이지에서 이 HTML 아티팩트를 다운로드 받아 로컬 브라우저에서 열어볼 수 있다.
       - name: Upload coverage report (HTML)
         uses: actions/upload-artifact@v3 # HTML 리포트를 GitHub Actions 결과 페이지에서 다운로드 가능하도록 업로드.
         with:
           name: coverage-html-report
           path: build/reports/jacoco/test/html
 
+      # PR 리뷰어가 변경된 코드에 대한 커버리지 정보를 쉽게 확인할 수 있다.
+      # 빌드/테스트 파이프라인 결과로 단순히 성공/실패 상태만 보는 것이 아니라, 커버리지 향상 여부나 부족한 부분을 PR 대화에서 직접 파악 가능하다.
       - name: 테스트 커버리지를 PR에 코멘트로 등록
         id: jacoco
-        uses: madrapps/jacoco-report@v1.2
+        uses: madrapps/jacoco-report@v1.2 # JaCoCo XML 리포트를 분석하여 PR에 커버리지 결과를 코멘트로 남긴다.
         with:
           title: 📝 테스트 커버리지 리포트
           paths: ${{ github.workspace }}/backend/build/reports/jacoco/test/jacocoTestReport.xml
