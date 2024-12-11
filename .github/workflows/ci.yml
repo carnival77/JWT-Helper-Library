@@ -60,7 +60,7 @@ jobs:
       # 빌드/테스트 파이프라인 결과로 단순히 성공/실패 상태만 보는 것이 아니라, 커버리지 향상 여부나 부족한 부분을 PR 대화에서 직접 파악 가능하다.
       - name: 테스트 커버리지를 PR에 코멘트로 등록
         id: jacoco
-        uses: madrapps/jacoco-report@v1.7.1 # JaCoCo XML 리포트를 분석하여 PR에 커버리지 결과를 코멘트로 남긴다.
+        uses: madrapps/jacoco-report@v1.6.1 # JaCoCo XML 리포트를 분석하여 PR에 커버리지 결과를 코멘트로 남긴다.
         with:
           title: 📝 테스트 커버리지 리포트
           paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
