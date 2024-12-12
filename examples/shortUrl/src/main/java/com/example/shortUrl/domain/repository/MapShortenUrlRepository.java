@@ -32,12 +32,6 @@ public class MapShortenUrlRepository implements ShortenUrlRepository {
     @Override
     public ShortenUrl findByShortenUrlKey(String shortenUrlKey) {
 
-        for (String key : shortenUrlMap.keySet()) {
-            if (shortenUrlKey.equals(key)) {
-                return shortenUrlMap.get(key);
-            }
-        }
-
-        return null;
+        return shortenUrlMap.get(shortenUrlKey);
     }
 }
