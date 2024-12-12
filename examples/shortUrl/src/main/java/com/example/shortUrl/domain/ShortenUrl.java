@@ -7,9 +7,9 @@ import java.util.Random;
 @Getter
 public class ShortenUrl {
 
-    private final String originalUrl;
-    private final String shortenUrlKey;
-    private final Long redirectCount;
+    private String originalUrl;
+    private String shortenUrlKey;
+    private Long redirectCount;
 
     public ShortenUrl(String originalUrl, String shortenUrlKey) {
         this.originalUrl = originalUrl;
@@ -28,6 +28,11 @@ public class ShortenUrl {
         }
 
         return shortenUrlKey.toString();
+    }
+
+    public void increaseRedirectCount() {
+        // 리다이렉트 횟수 증가
+        this.redirectCount++;
     }
 
 }

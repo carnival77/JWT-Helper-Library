@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 public class ShortenUrlInformationDto {
 
-    private final String originalUrl;
-    private final String shortenUrlKey;
-    private final Long redirectCount;
+    private String originalUrl;
+    private String shortenUrlKey;
+    private Long redirectCount;
 
     public ShortenUrlInformationDto(ShortenUrl shortenUrl) {
         this.originalUrl = shortenUrl.getOriginalUrl();

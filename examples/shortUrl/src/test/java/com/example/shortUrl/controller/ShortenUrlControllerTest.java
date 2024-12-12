@@ -95,8 +95,7 @@ public class ShortenUrlControllerTest {
 
         mvc.perform(get(local_url + "/" +shortenUrlKey)
                 .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(objectMapper.writeValueAsString(shortenUrlCreateRequestDto)))
+                .characterEncoding("UTF-8"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -104,5 +103,28 @@ public class ShortenUrlControllerTest {
         assertThat(shortenUrlRepository.findByShortenUrlKey(shortenUrlKey)).isNotNull();
     }
 
+    @DisplayName("[Controller] 단축URL 리다이렉트 테스트")
+    @Test
+    public void redirectShortenUrl() throws Exception {
+
+        // given
+        local_url = local_address + path;
+        // ObjectMapper 추가
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // when
+        ShortenUrlCreateRequestDto shortenUrlCreateRequestDto = new ShortenUrlCreateRequestDto("https://www.google.com");
+        ShortenUrlCreateResponseDto shortenUrlCreateResponseDto = shortenUrlService.createShortenUrl(shortenUrlCreateRequestDto);
+        String shortenUrlKey = shortenUrlCreateResponseDto.getShortenUrlKey();
+
+        mvc.perform(get(local_url + "/" + shortenUrlKey)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection());
+
+        // then
+        assertThat(shortenUrlRepository.findByShortenUrlKey(shortenUrlKey)).isNotNull();
+    }
 
 }

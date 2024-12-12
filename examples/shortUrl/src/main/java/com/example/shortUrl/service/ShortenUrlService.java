@@ -44,4 +44,15 @@ public class ShortenUrlService {
         return shortenUrlInformationDto;
     }
 
+    public String getOriginalUrl(String shortenUrlKey) {
+        // 단축 URL 키를 통해 ShortenUrl 도메인 객체 조회
+        ShortenUrl shortenUrl = shortenUrlRepository.findByShortenUrlKey(shortenUrlKey);
+
+        // ShortenUrl 도메인 객체의 리다이렉트 횟수 증가
+        shortenUrl.increaseRedirectCount();
+
+        // ShortenUrl 도메인 객체의 원래 URL 반환
+        return shortenUrl.getOriginalUrl();
+    }
+
 }
