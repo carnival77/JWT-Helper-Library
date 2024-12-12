@@ -1,6 +1,7 @@
 package com.example.shortUrl.controller;
 
 import com.example.shortUrl.domain.dto.ShortenUrlCreateRequestDto;
+import com.example.shortUrl.domain.dto.ShortenUrlCreateResponseDto;
 import com.example.shortUrl.domain.repository.ShortenUrlRepository;
 import com.example.shortUrl.service.ShortenUrlService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,11 +61,10 @@ public class ShortenUrlControllerTest {
         // given
         url = "/shortenUrl";
         local_url = local_address + path + url;
-
-        // when
         // ObjectMapper 추가
         ObjectMapper objectMapper = new ObjectMapper();
 
+        // when
         ShortenUrlCreateRequestDto shortenUrlCreateRequestDto = new ShortenUrlCreateRequestDto("https://www.google.com");
         mvc.perform(post(local_url)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -77,4 +77,32 @@ public class ShortenUrlControllerTest {
         assertThat(shortenUrlRepository.findByOriginalUrl("https://www.google.com")).isNotNull();
         assertThat(shortenUrlRepository.findByOriginalUrl("https://www.google.com").getShortenUrlKey()).hasSize(8);
     }
+
+    @DisplayName("[Controller] 단축URL 정보 조회 테스트")
+    @Test
+    public void getShortenUrlInfo() throws Exception {
+
+        // given
+        url = "/shortenUrl";
+        local_url = local_address + path + url;
+        // ObjectMapper 추가
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // when
+        ShortenUrlCreateRequestDto shortenUrlCreateRequestDto = new ShortenUrlCreateRequestDto("https://www.google.com");
+        ShortenUrlCreateResponseDto shortenUrlCreateResponseDto = shortenUrlService.createShortenUrl(shortenUrlCreateRequestDto);
+        String shortenUrlKey = shortenUrlCreateResponseDto.getShortenUrlKey();
+
+        mvc.perform(get(local_url + "/" +shortenUrlKey)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsString(shortenUrlCreateRequestDto)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        // then
+        assertThat(shortenUrlRepository.findByShortenUrlKey(shortenUrlKey)).isNotNull();
+    }
+
+
 }

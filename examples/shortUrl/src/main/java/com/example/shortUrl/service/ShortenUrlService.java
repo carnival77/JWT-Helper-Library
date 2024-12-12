@@ -34,13 +34,14 @@ public class ShortenUrlService {
     }
 
     public ShortenUrlInformationDto getShortenUrlInfo(String shortenUrlKey) {
+
         // 단축 URL 키를 통해 ShortenUrl 도메인 객체 조회
+        ShortenUrl shortenUrl = shortenUrlRepository.findByShortenUrlKey(shortenUrlKey);
 
         // ShortenUrl 도메인 객체를 ShortenUrlInformationDto 로 변환
-//        ShortenUrlInformationDto shortenUrlInformationDto = new ShortenUrlInformationDto("originalUrl",shortenUrlKey);
+        ShortenUrlInformationDto shortenUrlInformationDto = new ShortenUrlInformationDto(shortenUrl);
 
-//        return shortenUrlInformationDto;
-        return null;
+        return shortenUrlInformationDto;
     }
 
 }
