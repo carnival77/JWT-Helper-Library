@@ -1,5 +1,6 @@
 package com.example.shortUrl.shortenurlmngt.service;
 
+import com.example.shortUrl.common.exception.LackOfShortenUrlKeyException;
 import com.example.shortUrl.common.exception.NotFoundShortenUrlKeyException;
 import com.example.shortUrl.domain.ShortenUrl;
 import com.example.shortUrl.domain.repository.ShortenUrlRepository;
@@ -19,8 +20,8 @@ public class ShortenUrlService {
 
         String originalUrl = shortenUrlCreateRequestDto.getOriginalUrl();
 
-        // 단축 URL 키 생성
-        String shortenUrlKey = ShortenUrl.generateShortenUrlKey();
+        // 기존에 등록되어 있지 않은 단축 URL 키 생성
+        String shortenUrlKey = getUniqueShortenUrlKey();
 
         // 원래의 URL과 단축 URL 키를 통해 ShortenUrl 도메인 객체 생성
         ShortenUrl shortenUrl = new ShortenUrl(originalUrl,shortenUrlKey);
@@ -65,6 +66,23 @@ public class ShortenUrlService {
 
         // ShortenUrl 도메인 객체의 원래 URL 반환
         return shortenUrl.getOriginalUrl();
+    }
+
+    private String getUniqueShortenUrlKey(){
+        // 단축 URL 키가 이미 존재할 경우, 최대 5번까지 재시도한 후 예외 처리
+        String shortenUrlKey=null;
+        final int MAX_RETRY_COUNT = 5;
+        int count=0;
+
+        while (count<MAX_RETRY_COUNT) {
+            shortenUrlKey = ShortenUrl.generateShortenUrlKey();
+            if(shortenUrlRepository.findByShortenUrlKey(shortenUrlKey) == null) {
+                return shortenUrlKey;
+            }
+            count++;
+        }
+
+        throw new LackOfShortenUrlKeyException();
     }
 
 }

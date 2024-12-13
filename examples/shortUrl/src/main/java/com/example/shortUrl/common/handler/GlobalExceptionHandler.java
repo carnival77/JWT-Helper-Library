@@ -14,6 +14,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundShortenUrlKeyException.class)
     public ResponseEntity<?> handleNotFoundShortenUrlKeyException(NotFoundShortenUrlKeyException e) {
         log.error("NotFoundShortenUrlKeyException: {}", e.getMessage());
-        return new ResponseEntity<String>("단축 URL을 찾지 못했습니다.", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(LayerInstantiationException.class)
+    public ResponseEntity<?> handle(LayerInstantiationException e) {
+        log.error("LayerInstantiationException: {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
