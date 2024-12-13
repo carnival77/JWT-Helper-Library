@@ -1,4 +1,4 @@
-package com.example.shortUrl.service;
+package com.example.shortUrl.shortenurlmngt.service;
 
 import com.example.shortUrl.domain.ShortenUrl;
 import com.example.shortUrl.domain.repository.ShortenUrlRepository;

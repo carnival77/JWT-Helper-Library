@@ -1,9 +1,9 @@
-package com.example.shortUrl.controller;
+package com.example.shortUrl.shortenurlmngt.controller;
 
 import com.example.shortUrl.domain.dto.ShortenUrlCreateRequestDto;
 import com.example.shortUrl.domain.dto.ShortenUrlCreateResponseDto;
 import com.example.shortUrl.domain.dto.ShortenUrlInformationDto;
-import com.example.shortUrl.service.ShortenUrlService;
+import com.example.shortUrl.shortenurlmngt.service.ShortenUrlService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

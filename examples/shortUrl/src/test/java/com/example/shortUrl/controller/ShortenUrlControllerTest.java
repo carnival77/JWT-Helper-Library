@@ -3,7 +3,7 @@ package com.example.shortUrl.controller;
 import com.example.shortUrl.domain.dto.ShortenUrlCreateRequestDto;
 import com.example.shortUrl.domain.dto.ShortenUrlCreateResponseDto;
 import com.example.shortUrl.domain.repository.ShortenUrlRepository;
-import com.example.shortUrl.service.ShortenUrlService;
+import com.example.shortUrl.shortenurlmngt.service.ShortenUrlService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
