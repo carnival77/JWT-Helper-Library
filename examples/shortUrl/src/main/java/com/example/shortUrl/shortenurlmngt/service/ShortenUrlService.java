@@ -1,5 +1,6 @@
 package com.example.shortUrl.shortenurlmngt.service;
 
+import com.example.shortUrl.common.exception.NotFoundShortenUrlKeyException;
 import com.example.shortUrl.domain.ShortenUrl;
 import com.example.shortUrl.domain.repository.ShortenUrlRepository;
 import com.example.shortUrl.domain.dto.ShortenUrlCreateRequestDto;
@@ -38,6 +39,11 @@ public class ShortenUrlService {
         // 단축 URL 키를 통해 ShortenUrl 도메인 객체 조회
         ShortenUrl shortenUrl = shortenUrlRepository.findByShortenUrlKey(shortenUrlKey);
 
+        // 조회된 ShortenUrl 도메인 객체가 없는 경우 예외 처리
+        if(shortenUrl == null) {
+            throw new NotFoundShortenUrlKeyException();
+        }
+
         // ShortenUrl 도메인 객체를 ShortenUrlInformationDto 로 변환
         ShortenUrlInformationDto shortenUrlInformationDto = new ShortenUrlInformationDto(shortenUrl);
 
@@ -45,8 +51,14 @@ public class ShortenUrlService {
     }
 
     public String getOriginalUrl(String shortenUrlKey) {
+
         // 단축 URL 키를 통해 ShortenUrl 도메인 객체 조회
         ShortenUrl shortenUrl = shortenUrlRepository.findByShortenUrlKey(shortenUrlKey);
+
+        // 조회된 ShortenUrl 도메인 객체가 없는 경우 예외 처리
+        if(shortenUrl == null) {
+            throw new NotFoundShortenUrlKeyException();
+        }
 
         // ShortenUrl 도메인 객체의 리다이렉트 횟수 증가
         shortenUrl.increaseRedirectCount();

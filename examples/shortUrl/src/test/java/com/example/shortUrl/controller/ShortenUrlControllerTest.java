@@ -1,10 +1,12 @@
 package com.example.shortUrl.controller;
 
+import com.example.shortUrl.common.exception.NotFoundShortenUrlKeyException;
 import com.example.shortUrl.domain.dto.ShortenUrlCreateRequestDto;
 import com.example.shortUrl.domain.dto.ShortenUrlCreateResponseDto;
 import com.example.shortUrl.domain.repository.ShortenUrlRepository;
 import com.example.shortUrl.shortenurlmngt.service.ShortenUrlService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -85,8 +87,6 @@ public class ShortenUrlControllerTest {
         // given
         url = "/shortenUrl";
         local_url = local_address + path + url;
-        // ObjectMapper 추가
-        ObjectMapper objectMapper = new ObjectMapper();
 
         // when
         ShortenUrlCreateRequestDto shortenUrlCreateRequestDto = new ShortenUrlCreateRequestDto("https://www.google.com");
@@ -109,8 +109,6 @@ public class ShortenUrlControllerTest {
 
         // given
         local_url = local_address + path;
-        // ObjectMapper 추가
-        ObjectMapper objectMapper = new ObjectMapper();
 
         // when
         ShortenUrlCreateRequestDto shortenUrlCreateRequestDto = new ShortenUrlCreateRequestDto("https://www.google.com");
@@ -125,6 +123,39 @@ public class ShortenUrlControllerTest {
 
         // then
         assertThat(shortenUrlRepository.findByShortenUrlKey(shortenUrlKey)).isNotNull();
+    }
+
+    @DisplayName("[Controller] 단축URL 리다이렉트 시 단축URL 미존재 예외 처리 테스트")
+    @Test
+    public void redirectShortenUrl_NotFoundShortenUrlKeyException() throws Exception {
+
+        // given
+        local_url = local_address + path;
+        String shortenUrlKey = "notFoundShortenUrlKey";
+
+        // when & then
+        mvc.perform(get(local_url + "/" + shortenUrlKey)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @DisplayName("[Controller] 단축URL 정보 조회 시 단축URL 미존재 예외 처리 테스트")
+    @Test
+    public void getShortenUrlInfo_NotFoundShortenUrlKeyException() throws Exception {
+
+        // given
+        url = "/shortenUrl";
+        local_url = local_address + path + url;
+        String shortenUrlKey = "notFoundShortenUrlKey";
+
+        // when & then
+        mvc.perform(get(local_url + "/" + shortenUrlKey)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
     }
 
 }
