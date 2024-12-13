@@ -14,17 +14,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @RestController
+@RequestMapping
 @RequiredArgsConstructor
-public class ShortenUrlController {
+public class ShortenUrlController implements ShortenUrlControllerDocs {
 
     private final ShortenUrlService shortenUrlService;
 
-    @PostMapping("/shortenUrl")
+    @Override
     public ResponseEntity<ShortenUrlCreateResponseDto> createShortenUrl(@Valid @RequestBody ShortenUrlCreateRequestDto shortenUrlCreateRequestDto) {
         return ResponseEntity.ok(shortenUrlService.createShortenUrl(shortenUrlCreateRequestDto));
     }
 
-    @GetMapping("{shortenUrlKey}")
+    @Override
     public ResponseEntity<?> redirectShortenUrl(@PathVariable String shortenUrlKey) throws URISyntaxException {
 
         String originalUrl = shortenUrlService.getOriginalUrl(shortenUrlKey);
@@ -36,7 +37,7 @@ public class ShortenUrlController {
         return new ResponseEntity<>(httpHeaders, HttpStatus.MOVED_PERMANENTLY);
     }
 
-    @GetMapping("/shortenUrl/{shortenUrlKey}")
+    @Override
     public ResponseEntity<ShortenUrlInformationDto> getShortenUrlInfo(@PathVariable String shortenUrlKey) {
         return ResponseEntity.ok(shortenUrlService.getShortenUrlInfo(shortenUrlKey));
     }
