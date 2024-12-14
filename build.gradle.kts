@@ -5,6 +5,9 @@ plugins {
 	kotlin("jvm") version "1.9.10"
 	kotlin("plugin.spring") version "1.9.10"
 	id("jacoco")
+	// 퍼블리싱 플러그인
+//	id("maven-publish") // Maven 퍼블리싱 플러그인
+//	signing       // 서명 플러그인 (Maven Central 필수)
 }
 
 jacoco {
@@ -30,8 +33,11 @@ tasks.jacocoTestReport { // jacocoTestReport 작업은 생성 전에 반드시 t
 	}
 }
 
-group = "com.example"
-version = "0.0.1-SNAPSHOT"
+// 프로젝트 메타데이터 정의 - 라이브러리 정보
+group = "com.example"       // 그룹 ID (예: 도메인 형식)
+version = "1.0.0"           // 라이브러리 버전
+description = "JWT_Parsing_Verification_Library" // 라이브러리 설명
+
 
 java {
 	toolchain {
@@ -61,3 +67,63 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+// Maven Central 퍼블리싱 설정
+
+// Maven 퍼블리싱 설정
+//publishing {
+//	publications {
+//		create<MavenPublication>("mavenJava") {
+//			from(components["java"]) // Java/Kotlin 컴포넌트 포함
+//
+//			// 프로젝트 메타데이터
+//			pom {
+//				name.set("My Kotlin Library")
+//				description.set("A sample library for Maven Central publishing.")
+//				url.set("https://github.com/username/my-library")
+//
+//				licenses {
+//					license {
+//						name.set("The Apache License, Version 2.0")
+//						url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+//					}
+//				}
+//
+//				developers {
+//					developer {
+//						id.set("username")
+//						name.set("Your Name")
+//						email.set("your.email@example.com")
+//					}
+//				}
+//
+//				scm {
+//					connection.set("scm:git:git://github.com/username/my-library.git")
+//					developerConnection.set("scm:git:ssh://github.com/username/my-library.git")
+//					url.set("https://github.com/username/my-library")
+//				}
+//			}
+//		}
+//	}
+//
+//	repositories {
+//		maven {
+//			name = "MavenCentral"
+//			url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+//
+//			credentials {
+//				username = System.getenv("OSSRH_USERNAME") // Sonatype 계정
+//				password = System.getenv("OSSRH_PASSWORD") // Sonatype 비밀번호
+//			}
+//		}
+//	}
+//}
+//
+//// GPG 서명 설정
+//signing {
+//	useInMemoryPgpKeys(
+//		System.getenv("GPG_PRIVATE_KEY"),  // GPG 개인 키
+//		System.getenv("GPG_PRIVATE_KEY_PASSWORD") // GPG 비밀번호
+//	)
+//	sign(publishing.publications["mavenJava"])
+//}
