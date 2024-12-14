@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
-@Service
 public class JWTGenerator {
 
     private final Key secretKey; // Secret Key를 바탕으로 HMAC 서명키를 생성한다.

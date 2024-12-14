@@ -1,19 +1,21 @@
 package com.example.jwtlibrary.service;
 
+import com.example.jwtlibrary.config.AppConfig;
 import com.example.jwtlibrary.config.JWTProperties;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
 public class JWTGeneratorTest {
 
-    @Autowired
-    JWTProperties jwtProperties;
+    //Spring Context 수동 초기화
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+    // JWTProperties 빈 주입
+    JWTProperties jwtProperties = context.getBean(JWTProperties.class);
 
     JWTGenerator jwtGenerator;
 
