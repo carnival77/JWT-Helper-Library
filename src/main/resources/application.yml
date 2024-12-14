@@ -2,9 +2,30 @@ spring:
   application:
     name: jwtlibrary
 
-# JWT Configuration
-jwt:
-  secretKey: your-256-bit-secret-your-256-bit-secret-your-256-bit-secret
-  expiration: 3600000 # 1 hour
-  algorithm: HS256
 
+jwt:
+  create-account:
+    secretKey: your-256-bit-secret-your-256-bit-secret-your-256-bit-secret
+    expiration: 3600000 # 1 hour
+    algorithm: HS256
+    claims: ['email', 'name']
+  reset-passwd:
+    secretKey: your-256-bit-secret-your-256-bit-secret-your-256-bit-secret
+    expiration: 3600000 # 1 hour
+    algorithm: HS256
+  login:
+    secretKey: your-256-bit-secret-your-256-bit-secret-your-256-bit-secret
+    expiration: 3600000 # 1 hour
+    algorithm: HS256
+    claims: ['role']
+
+json, yaml, properties
+    
+Map<String, JwtProperty> jwt = new HashMap<>();
+
+List<JwtPropertyGroup> jwt = new ArrayList<>();
+
+record JwtPropertyGroup {
+    String name;
+    JwtProperty property;
+}
