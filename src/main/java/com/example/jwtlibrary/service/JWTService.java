@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 
 // JWT 토큰 파싱, 서명 검증, 만료 검증 로직을 중앙화한 핵심 서비스 클래스.
-@Service
 public class JWTService {
 
     private final Key secretKey;

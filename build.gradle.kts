@@ -1,7 +1,8 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.4.0"
-	id("io.spring.dependency-management") version "1.1.6"
+	// Spring Boot 기반 환경을 완전히 제거하고 순수한 Spring 환경으로 변경
+//	id("org.springframework.boot") version "3.2.5"
+//	id("io.spring.dependency-management") version "1.1.5"
 	kotlin("jvm") version "1.9.10"
 	kotlin("plugin.spring") version "1.9.10"
 	id("jacoco")
@@ -44,16 +45,16 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework:spring-context:6.2.0")
 
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework:spring-context:6.2.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0") // JUnit 5 API
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0") // JUnit 5 실행 엔진
 	testImplementation("org.mockito:mockito-junit-jupiter:5.5.0")
 
 }
@@ -61,3 +62,7 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+//tasks.test {
+//	useJUnitPlatform()
+//}
