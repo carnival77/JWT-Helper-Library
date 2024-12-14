@@ -1,6 +1,7 @@
 package com.example.jwtlibrary.service;
 
 import com.example.jwtlibrary.config.JWTProperties;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JWTGenerator {
 
@@ -23,13 +26,17 @@ public class JWTGenerator {
     }
 
     // subject(사용자 식별자), role(사용자 권한) 등의 Claim, 해시 암호화 알고리즘 포함한 JWT 생성
-    public String generateToken(String subject, String role){
+    public String generateToken(String subject, Map<String, Object> claims){
         long now = System.currentTimeMillis();
         Date expiry = new Date(now + expiration);
 
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("typ", "JWT");
+
         return Jwts.builder()
+                .setHeader(headers)
+                .setClaims(claims)
                 .setSubject(subject)
-                .claim("role",role)
                 .setIssuedAt(new Date(now))
                 .setExpiration(expiry)
                 .signWith(secretKey, algorithm)

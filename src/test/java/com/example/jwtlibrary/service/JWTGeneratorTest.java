@@ -7,6 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JWTGeneratorTest {
@@ -27,7 +30,13 @@ public class JWTGeneratorTest {
     // JWTGenerator의 generateToken 메서드를 테스트하는 코드
     @Test
     void generateTokenTest(){
-        String token = jwtGenerator.generateToken("user1","ROLE_USER");
+        String subject = "user1";
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+        claims.put("role","USER");
+        claims.put("name","John Doe");
+        claims.put("email","www.naver.com");
+
+        String token = jwtGenerator.generateToken(subject,claims);
         assertNotNull(token);
     }
 

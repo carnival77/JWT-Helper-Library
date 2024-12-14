@@ -1,8 +1,5 @@
 plugins {
 	java
-	// Spring Boot 기반 환경을 완전히 제거하고 순수한 Spring 환경으로 변경
-//	id("org.springframework.boot") version "3.2.5"
-//	id("io.spring.dependency-management") version "1.1.5"
 	kotlin("jvm") version "1.9.10"
 	kotlin("plugin.spring") version "1.9.10"
 	id("jacoco")
@@ -62,7 +59,3 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
-
-//tasks.test {
-//	useJUnitPlatform()
-//}

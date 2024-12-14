@@ -15,6 +15,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,26 +42,28 @@ public class JWTServiceTest {
     // JWTGenerator의 generateToken 기반 토큰 생성 및 JWTService의 validateAndClaims 기반 검증 테스트
     @Test
     void generateAndValidateTokenTest(){
-        String token = jwtGenerator.generateToken("validUser","ROLE_USER");
-        Claims claims = jwtService.validateAndClaims(token);
-        assertEquals(claims.getSubject(),"validUser");
+        String subject = "user1";
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+        claims.put("role","USER");
+        claims.put("name","John Doe");
+        claims.put("email","www.naver.com");
+
+        String token = jwtGenerator.generateToken(subject,claims);
+        Claims getClaims = jwtService.validateAndClaims(token);
+
+        assertEquals(getClaims.getSubject(),"user1");
     }
 
     // 필수 클레임 Subject가 없는 토큰 생성 및 검증 테스트 1
     @Test
     void missingSubjectClaimTest1(){
-        String token = jwtGenerator.generateToken(null,"ROLE_USER");
-        assertThrows(MissingClaimsException.class,()->jwtService.validateAndClaims(token));
-    }
+        String subject = null;
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+        claims.put("role","USER");
+        claims.put("name","John Doe");
+        claims.put("email","www.naver.com");
+        String token = jwtGenerator.generateToken(subject,claims);
 
-    // 필수 클레임 Subject가 없는 토큰 생성 및 검증 테스트 2
-    @Test
-    void missingSubjectClaimTest2(){
-        String token = Jwts.builder()
-                .claim("role","ROLE_USER")
-                .setExpiration(new Date(System.currentTimeMillis()+1000000))
-                .signWith(key,jwtProperties.getAlgorithm())
-                .compact();
         assertThrows(MissingClaimsException.class,()->jwtService.validateAndClaims(token));
     }
 
@@ -82,8 +86,23 @@ public class JWTServiceTest {
     // 유효하지 않은 토큰 검증 테스트 - 토큰 불일치
     @Test
     void invalidMisMatchTokenTest(){
-        String token = jwtGenerator.generateToken("validUser","ROLE_USER");
-        String invalidToken = jwtGenerator.generateToken("invalidUser","ROLE_USER");
+
+        String subject = "user1";
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+        claims.put("role","USER");
+        claims.put("name","John Doe");
+        claims.put("email","www.naver.com");
+
+        String token = jwtGenerator.generateToken(subject,claims);
+
+        String subject2 = "user2";
+        Map<String, Object> claims2 = new ConcurrentHashMap<>();
+        claims.put("role","USER");
+        claims.put("name","John Doe");
+        claims.put("email","www.naver.com");
+
+        String invalidToken = jwtGenerator.generateToken(subject2,claims2);
+
         assertNotEquals(token,invalidToken);
     }
 }

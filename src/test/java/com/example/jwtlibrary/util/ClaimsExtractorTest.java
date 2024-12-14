@@ -13,6 +13,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -39,10 +41,17 @@ public class ClaimsExtractorTest {
 
     @Test
     public void testExtractClaim() {
-        String token = jwtGenerator.generateToken("validUser", "ROLE_USER");
-        Claims claims = jwtService.validateAndClaims(token);
-        assertEquals(ClaimsExtractor.getSubject(claims), "validUser");
-        assertEquals(ClaimsExtractor.getStringClaims(claims, "role"), "ROLE_USER");
-        assertNull(ClaimsExtractor.getStringClaims(claims, "invalid"));
+
+        String subject = "user1";
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+        claims.put("role","USER");
+        claims.put("name","John Doe");
+        claims.put("email","www.naver.com");
+
+        String token = jwtGenerator.generateToken(subject, claims);
+        Claims validatedClaims = jwtService.validateAndClaims(token);
+        assertEquals(ClaimsExtractor.getSubject(validatedClaims), "user1");
+        assertEquals(ClaimsExtractor.getStringClaims(validatedClaims, "role"), "USER");
+        assertNull(ClaimsExtractor.getStringClaims(validatedClaims, "invalid"));
     }
 }
