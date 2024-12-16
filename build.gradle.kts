@@ -42,12 +42,18 @@ repositories {
 }
 
 dependencies {
+	// Spring Context
 	implementation("org.springframework:spring-context:6.2.0")
 
+	// JWT 관련 라이브러리
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
+	// YAML 파일 파싱 라이브러리
+	implementation("org.yaml:snakeyaml:2.2")
+
+	// test
 	testImplementation("org.springframework:spring-context:6.2.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0") // JUnit 5 API
