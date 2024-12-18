@@ -12,21 +12,24 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Objects;
 
 // JWT 토큰 파싱, 서명 검증, 만료 검증 로직을 중앙화한 핵심 서비스 클래스.
-@Service
 public class JWTService {
 
-    private final Key secretKey;
+    private final JWTProperties jwtProperties;
 
     public JWTService(JWTProperties jwtProperties) {
-        // Secret Key 생성
-        this.secretKey = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
+        this.jwtProperties = jwtProperties;
     }
 
     // 토큰 파싱, 서명 검증, 만료 검증 수행
     // 유효하지 않을 경우 예외 발생
-    public Claims validateAndClaims(String token){
+    public Claims validateAndClaims(String token, String useCase){
+        // 사용 사례에 해당하는 설정 가져오기
+        JWTProperties.JwtConfig config = jwtProperties.getCases().get(useCase);
+        Key secretKey = Keys.hmacShaKeyFor(config.getSecretKey().getBytes(StandardCharsets.UTF_8));
+
         try{
             Jws<Claims> jws = Jwts.parserBuilder()
                     .setSigningKey(secretKey)
@@ -51,11 +54,14 @@ public class JWTService {
         }
     }
 
-    public String getUserIdFromClaims(Claims claims){
-        return ClaimsExtractor.getSubject(claims);
-    }
+    public String getUserRoleFromClaims(Claims claims, String useCase){
+        // 사용 사례에 해당하는 설정 가져오기
+        JWTProperties.JwtConfig config = jwtProperties.getCases().get(useCase);
+        // 사용 사례에 필수 claims 부재 시
+        if (config.getClaims() == null || config.getClaims().length == 0){
+            throw new IllegalArgumentException("Claims are not defined for use case: "+useCase);
+        }
 
-    public String getUserRoleFromClaims(Claims claims){
         return ClaimsExtractor.getStringClaims(claims, "role");
     }
 
