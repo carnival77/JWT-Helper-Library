@@ -1,4 +1,4 @@
-# JWT-Parsing-Verification-Library
+# JWT-Helper-Library
 
 ## 개요
 
