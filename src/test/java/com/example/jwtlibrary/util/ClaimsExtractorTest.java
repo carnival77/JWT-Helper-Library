@@ -16,8 +16,7 @@ import java.security.Key;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ClaimsExtractorTest {
 
@@ -30,11 +29,8 @@ public class ClaimsExtractorTest {
     JWTGenerator jwtGenerator;
     JWTService jwtService;
 
-    Key secretKey;
-
     @BeforeEach
     public void setUp() {
-        secretKey = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
         jwtGenerator = new JWTGenerator(jwtProperties);
         jwtService = new JWTService(jwtProperties);
     }
@@ -42,16 +38,20 @@ public class ClaimsExtractorTest {
     @Test
     public void testExtractClaim() {
 
+        // Given
+        String useCase="create-account";
         String subject = "user1";
         Map<String, Object> claims = new ConcurrentHashMap<>();
-        claims.put("role","USER");
         claims.put("name","John Doe");
         claims.put("email","www.naver.com");
 
-        String token = jwtGenerator.generateToken(subject, claims);
-        Claims validatedClaims = jwtService.validateAndClaims(token);
+        // When
+        String token = jwtGenerator.generateToken(useCase,subject,claims,null);
+        Claims validatedClaims = jwtService.validateAndClaims(token,useCase);
+
+        // Then
         assertEquals(ClaimsExtractor.getSubject(validatedClaims), "user1");
-        assertEquals(ClaimsExtractor.getStringClaims(validatedClaims, "role"), "USER");
-        assertNull(ClaimsExtractor.getStringClaims(validatedClaims, "invalid"));
+        assertEquals(ClaimsExtractor.getStringClaims(validatedClaims, "name"), "John Doe");
+        assertThrows(NullPointerException.class, () -> ClaimsExtractor.getStringClaims(validatedClaims, "invalid"));
     }
 }
