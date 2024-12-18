@@ -13,9 +13,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ClaimsExtractorTest {
 
@@ -28,21 +29,29 @@ public class ClaimsExtractorTest {
     JWTGenerator jwtGenerator;
     JWTService jwtService;
 
-    Key secretKey;
-
     @BeforeEach
     public void setUp() {
-        secretKey = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
         jwtGenerator = new JWTGenerator(jwtProperties);
         jwtService = new JWTService(jwtProperties);
     }
 
     @Test
     public void testExtractClaim() {
-        String token = jwtGenerator.generateToken("validUser", "ROLE_USER");
-        Claims claims = jwtService.validateAndClaims(token);
-        assertEquals(ClaimsExtractor.getSubject(claims), "validUser");
-        assertEquals(ClaimsExtractor.getStringClaims(claims, "role"), "ROLE_USER");
-        assertNull(ClaimsExtractor.getStringClaims(claims, "invalid"));
+
+        // Given
+        String useCase="create-account";
+        String subject = "user1";
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+        claims.put("name","John Doe");
+        claims.put("email","www.naver.com");
+
+        // When
+        String token = jwtGenerator.generateToken(useCase,subject,claims,null);
+        Claims validatedClaims = jwtService.validateAndClaims(token,useCase);
+
+        // Then
+        assertEquals(ClaimsExtractor.getSubject(validatedClaims), "user1");
+        assertEquals(ClaimsExtractor.getStringClaims(validatedClaims, "name"), "John Doe");
+        assertThrows(NullPointerException.class, () -> ClaimsExtractor.getStringClaims(validatedClaims, "invalid"));
     }
 }

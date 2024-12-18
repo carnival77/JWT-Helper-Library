@@ -1,8 +1,5 @@
 plugins {
 	java
-	// Spring Boot 기반 환경을 완전히 제거하고 순수한 Spring 환경으로 변경
-//	id("org.springframework.boot") version "3.2.5"
-//	id("io.spring.dependency-management") version "1.1.5"
 	kotlin("jvm") version "1.9.10"
 	kotlin("plugin.spring") version "1.9.10"
 	id("jacoco")
@@ -45,12 +42,18 @@ repositories {
 }
 
 dependencies {
+	// Spring Context
 	implementation("org.springframework:spring-context:6.2.0")
 
+	// JWT 관련 라이브러리
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
+	// YAML 파일 파싱 라이브러리
+	implementation("org.yaml:snakeyaml:2.2")
+
+	// test
 	testImplementation("org.springframework:spring-context:6.2.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0") // JUnit 5 API
@@ -62,7 +65,3 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
-
-//tasks.test {
-//	useJUnitPlatform()
-//}

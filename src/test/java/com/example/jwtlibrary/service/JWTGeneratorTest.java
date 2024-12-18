@@ -7,7 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JWTGeneratorTest {
 
@@ -26,8 +29,94 @@ public class JWTGeneratorTest {
 
     // JWTGenerator의 generateToken 메서드를 테스트하는 코드
     @Test
-    void generateTokenTest(){
-        String token = jwtGenerator.generateToken("user1","ROLE_USER");
+    void 토큰생성테스트_토큰정상생성(){
+
+        // Given
+        String useCase="create-account";
+        String subject = "user1";
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+//        claims.put("role","USER");
+        claims.put("name","John Doe");
+        claims.put("email","www.naver.com");
+
+        // When
+        String token = jwtGenerator.generateToken(useCase,subject,claims,null);
+
+        // then
+        assertNotNull(token);
+    }
+
+    @Test
+    void 토큰생성테스트_claims_누락(){
+        String useCase="create-account";
+        String subject = "user1";
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+//        claims.put("role","USER");
+        claims.put("name","John Doe");
+//        claims.put("role","ROLE_USER");
+
+        // When & Then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            jwtGenerator.generateToken(useCase, subject, claims, null);
+        });
+
+        // 예외 메시지 검증
+        assertEquals("필수로 설정된 claims가 누락되었습니다.: "+claims, exception.getMessage());
+    }
+
+    @Test
+    void 토큰생성테스트_claims_불일치(){
+        String useCase="create-account";
+        String subject = "user1";
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+        claims.put("email","www.naver.com");
+        claims.put("name","John Doe");
+        claims.put("role","ROLE_USER");
+
+        // When & Then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            jwtGenerator.generateToken(useCase, subject, claims, null);
+        });
+
+        // 예외 메시지 검증
+        assertEquals("필수로 설정된 claims와 입력된 claims가 다릅니다.: "+claims, exception.getMessage());
+    }
+
+    @Test
+    void 토큰생성테스트_claims_유효값_검사(){
+        String useCase="create-account";
+        String subject = "user1";
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+        claims.put("email",""); // 빈 값
+        claims.put("name","John Doe");
+//        claims.put("role","ROLE_USER");
+
+        // When & Then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            jwtGenerator.generateToken(useCase, subject, claims, null);
+        });
+
+        // 예외 메시지 검증
+        assertEquals("필수로 설정된 claims에 대한 유효한 값이 존재하지 않습니다.: "+claims, exception.getMessage());
+    }
+
+    @Test
+    void 토큰생성테스트_추가claims_작동_검사(){
+        String useCase="login";
+        String subject = "user1";
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+//        claims.put("email",""); // 빈 값
+//        claims.put("name","John Doe");
+        claims.put("role","ROLE_USER");
+
+        Map<String, Object> additionalClaims = new ConcurrentHashMap<>();
+        additionalClaims.put("email","www.naver.com");
+        additionalClaims.put("name","John Doe");
+
+        // When
+        String token = jwtGenerator.generateToken(useCase,subject,claims,additionalClaims);
+
+        // then
         assertNotNull(token);
     }
 
