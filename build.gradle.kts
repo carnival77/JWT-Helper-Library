@@ -1,10 +1,9 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.4.0"
-	id("io.spring.dependency-management") version "1.1.6"
 	kotlin("jvm") version "1.9.10"
 	kotlin("plugin.spring") version "1.9.10"
 	id("jacoco")
+	id("maven-publish")
 }
 
 jacoco {
@@ -31,7 +30,7 @@ tasks.jacocoTestReport { // jacocoTestReport 작업은 생성 전에 반드시 t
 }
 
 group = "com.example"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0"
 
 java {
 	toolchain {
@@ -44,20 +43,45 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springframework.boot:spring-boot-starter-security")
+	// Spring Context
+	implementation("org.springframework:spring-context:6.2.0")
 
+	// JWT 관련 라이브러리
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	// YAML 파일 파싱 라이브러리
+	implementation("org.yaml:snakeyaml:2.2")
+
+	// test
+	testImplementation("org.springframework:spring-context:6.2.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0") // JUnit 5 API
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0") // JUnit 5 실행 엔진
 	testImplementation("org.mockito:mockito-junit-jupiter:5.5.0")
 
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("mavenJava") {
+			from(components["java"])
+		}
+	}
+	repositories {
+		maven {
+			name = "GitHubPackages"
+			url = uri("https://maven.pkg.github.com/carnival77/JWT-Helper-Library")
+			// 퍼블리싱 명령어 : ./gradlew publish -DGITHUB_USERNAME=MY_GITHUB_USERNAME -DGITHUB_TOKEN=MY_GITHUB_TOKEN
+			credentials {
+				username = System.getenv("MY_GITHUB_USERNAME") // GitHub 사용자명
+				password = System.getenv("MY_GITHUB_TOKEN")    // GitHub Personal Access Token
+			}
+		}
+	}
 }

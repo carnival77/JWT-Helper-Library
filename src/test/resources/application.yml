@@ -1,0 +1,16 @@
+# JWT Configuration
+jwt:
+  create-account:
+    secretKey: your-256-bit-secret-your-256-bit-secret-your-256-bit-secret1
+    expiration: 1200000 # 20 min
+    algorithm: HS256
+    claims: ['email', 'name']
+  reset-passwd:
+    secretKey: your-256-bit-secret-your-256-bit-secret-your-256-bit-secret2
+    expiration: 600000 # 10 min
+    algorithm: HS256
+  login:
+    secretKey: your-256-bit-secret-your-256-bit-secret-your-256-bit-secret3
+    expiration: 3600000 # 1 hour
+    algorithm: HS256
+    claims: ['role']

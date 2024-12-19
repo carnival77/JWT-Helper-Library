@@ -1,13 +1,13 @@
-package com.example.jwtlibrary;
+package com.example.shortUrl;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JwtlibraryApplication {
+public class ShortUrlApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JwtlibraryApplication.class, args);
+		SpringApplication.run(ShortUrlApplication.class, args);
 	}
 
 }
