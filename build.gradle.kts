@@ -3,6 +3,7 @@ plugins {
 	kotlin("jvm") version "1.9.10"
 	kotlin("plugin.spring") version "1.9.10"
 	id("jacoco")
+	id("maven-publish")
 }
 
 jacoco {
@@ -29,7 +30,7 @@ tasks.jacocoTestReport { // jacocoTestReport 작업은 생성 전에 반드시 t
 }
 
 group = "com.example"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0"
 
 java {
 	toolchain {
@@ -64,4 +65,23 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("mavenJava") {
+			from(components["java"])
+		}
+	}
+	repositories {
+		maven {
+			name = "GitHubPackages"
+			url = uri("https://maven.pkg.github.com/carnival77/JWT-Helper-Library")
+			// 퍼블리싱 명령어 : ./gradlew publish -DGITHUB_USERNAME=MY_GITHUB_USERNAME -DGITHUB_TOKEN=MY_GITHUB_TOKEN
+			credentials {
+				username = System.getProperty("MY_GITHUB_USERNAME") // GitHub 사용자명
+				password = System.getProperty("MY_GITHUB_TOKEN")    // GitHub Personal Access Token
+			}
+		}
+	}
 }
