@@ -24,7 +24,7 @@ public class JWTPropertiesTest {
         JWTProperties.JwtConfig jwtConfig = jwtProperties.getCases().get(useCase);
 
         assert jwtConfig.getSecretKey().equals("your-256-bit-secret-your-256-bit-secret-your-256-bit-secret1");
-        assert jwtConfig.getExpiration().equals(1200L);
+        assert jwtConfig.getExpiration().equals(1200000L);
         assert jwtConfig.getAlgorithm().equals("HS256");
         assert Arrays.equals(jwtConfig.getClaims(), new String[]{"email", "name"});
 
