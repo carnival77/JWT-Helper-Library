@@ -36,6 +36,8 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
+	withSourcesJar()
+	withJavadocJar()
 }
 
 repositories {
@@ -67,21 +69,34 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+tasks.wrapper {
+	gradleVersion = "8.11.1"
+	distributionType = Wrapper.DistributionType.ALL
+}
+
 publishing {
 	publications {
 		create<MavenPublication>("mavenJava") {
 			from(components["java"])
 		}
 	}
-	repositories {
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/carnival77/JWT-Helper-Library")
-			// 퍼블리싱 명령어 : ./gradlew publish -DGITHUB_USERNAME=MY_GITHUB_USERNAME -DGITHUB_TOKEN=MY_GITHUB_TOKEN
-			credentials {
-				username = System.getenv("MY_GITHUB_USERNAME") // GitHub 사용자명
-				password = System.getenv("MY_GITHUB_TOKEN")    // GitHub Personal Access Token
-			}
-		}
-	}
 }
+
+//publishing {
+//	publications {
+//		create<MavenPublication>("mavenJava") {
+//			from(components["java"])
+//		}
+//	}
+//	repositories {
+//		maven {
+//			name = "GitHubPackages"
+//			url = uri("https://maven.pkg.github.com/carnival77/JWT-Helper-Library")
+//			// 퍼블리싱 명령어 : ./gradlew publish -DGITHUB_USERNAME=MY_GITHUB_USERNAME -DGITHUB_TOKEN=MY_GITHUB_TOKEN
+//			credentials {
+//				username = System.getenv("MY_GITHUB_USERNAME") // GitHub 사용자명
+//				password = System.getenv("MY_GITHUB_TOKEN")    // GitHub Personal Access Token
+//			}
+//		}
+//	}
+//}
